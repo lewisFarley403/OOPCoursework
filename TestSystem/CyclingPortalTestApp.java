@@ -1,7 +1,4 @@
-import cycling.BadMiniCyclingPortalImpl;
-import cycling.IllegalNameException;
-import cycling.InvalidNameException;
-import cycling.MiniCyclingPortal;
+import cycling.*;
 
 /**
  * A short program to illustrate an app testing some minimal functionality of a
@@ -21,6 +18,12 @@ public class CyclingPortalTestApp {
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
+		Team t = new Team("t1", "desc 1",11);
+		RMS rms = new RMS();
+		int teamid = rms.createTeam("t1","desc1");
+		rms.createRider(teamid,"testguy",2004);
+		rms.removeTeam(1);
+		System.out.println(rms.getRiders().get(0).getTeamID());
 		System.out.println("The system compiled and started the execution...");
 
 		// TODO replace BadMiniCyclingPortalImpl by CyclingPortalImpl
