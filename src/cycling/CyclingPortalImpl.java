@@ -1,6 +1,6 @@
 package cycling;
 
-public class CyclingPortalImpl implements CyclingPortal{
+public abstract class CyclingPortalImpl implements CyclingPortal{ //take out abstract later
     RMS rms;
     public CyclingPortalImpl(){
         this.rms = new RMS();
@@ -8,11 +8,11 @@ public class CyclingPortalImpl implements CyclingPortal{
     }
 
     @Override
-    public int createTeam(String name, String description){
+    public int createTeam(String name, String description) throws IllegalNameException,InvalidNameException{
         return this.rms.createTeam(name,description);
     }
     @Override
-    public void removeTeam(int teamID){
+    public void removeTeam(int teamID) throws IDNotRecognisedException{
         this.rms.removeTeam(teamID);
     }
     @Override
@@ -24,12 +24,12 @@ public class CyclingPortalImpl implements CyclingPortal{
         return this.rms.getTeamRiders(teamID);
     }
 
-    public int createRider(int teamID,String name, int yearOfBirth){
+    public int createRider(int teamID,String name, int yearOfBirth) throws IDNotRecognisedException{
         //test this because of Integer to let things be null
         return this.rms.createRider(teamID,name,yearOfBirth);
     }
     @Override
-    public void removeRider(int riderID){
+    public void removeRider(int riderID) throws IDNotRecognisedException{
         this.rms.removeRider(riderID);
         //more to this function, must remove all of this riders time and stuff
 
