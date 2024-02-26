@@ -20,8 +20,8 @@ public abstract class CyclingPortalImpl implements CyclingPortal{ //take out abs
         return this.rms.getTeams();
     }
     @Override
-    public int[] getTeamRiders(int teamID){
-        return this.rms.getTeamRiders(teamID);
+    public int[] getTeamRiders(int teamID)throws IDNotRecognisedException{
+        return this.rms.getTeamRiders(teamID) ;
     }
 
     public int createRider(int teamID,String name, int yearOfBirth) throws IDNotRecognisedException{
