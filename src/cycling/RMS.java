@@ -1,5 +1,6 @@
 package cycling;
 import java.util.ArrayList;
+import java.lang.IllegalArgumentException;
 
 /**
  * The RMS (Rider Management System) class represents a system for managing riders and teams in the cycling domain.
@@ -15,7 +16,7 @@ public class RMS {
 //    }
     public int [] getTeams(){
         int [] teamIDs = new int[this.teams.size()];
-        for (int i =0;i<this.teams.sise();i++){
+        for (int i =0;i<this.teams.size();i++){
             Team t = this.teams.get(i);
             teamIDs[i] = t.getID();
 
@@ -48,7 +49,7 @@ public class RMS {
      *                              characters, or has white spaces.
      */
     //copied from the interface
-    public int createTeam(String name,String description){
+    public int createTeam(String name,String description) throws IllegalNameException,InvalidNameException{
         Team team = new Team(name,description,this.nextAvailableTeamID);
         if (name == null){
             throw new InvalidNameException("Name should not be null");
@@ -90,7 +91,7 @@ public class RMS {
      * @throws IDNotRecognisedException if the team ID does not exist
      *
      */
-    public void removeTeam(int ID){
+    public void removeTeam(int ID) throws IDNotRecognisedException{
         int index = this.getTeamIndexByID(ID);
         if(index!=-1) {
             throw new IDNotRecognisedException("This team ID does not exist");
@@ -116,15 +117,15 @@ public class RMS {
      *                                  system
      */
 
-    public int createRider(Integer teamID, String name, int yearOfBirth){
+    public int createRider(Integer teamID, String name, Integer yearOfBirth) throws IDNotRecognisedException{
         boolean teamIDExists = false;
 
         //check if the yearOfBirth satifies the conditions for the yearOfBirth
         if (yearOfBirth == null){
-            throw IllegalArgumentException("year of birth cannot be null or empty");
+            throw new IllegalArgumentException("year of birth cannot be null or empty");
         }
         if (yearOfBirth < 1980){
-            throw IllegalArgumentException("Year of birth cannot be less than 1980");
+            throw new IllegalArgumentException("Year of birth cannot be less than 1980");
         }
 
         //check if the teamID exists in any team in the teams
@@ -166,13 +167,21 @@ public class RMS {
      *                                  in the system.
      * @param riderID
      */
-    public void removeRider(int riderID){
+    public void removeRider(int riderID) throws IDNotRecognisedException{
         //must remember to remove all of their racing results
         int indexOfRider = this.getRiderByID(riderID);
         if(indexOfRider ==-1){
             throw new IDNotRecognisedException("rider ID doesn't exist in the system");
         }
         this.riders.remove(riderID);
+    }
+    private int getTeamByID(int teamID){
+        for(int i =0;i<this.teams.size();i++){
+            if (this.teams.get(i).getID()==teamID){
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -181,7 +190,9 @@ public class RMS {
      * @return int[] of riders riderID
      * @throws IDNotRecognisedException if the teamID is not in system
      */
-    public int[] getTeamRiders(int teamID){
+
+
+    public int[] getTeamRiders(int teamID) throws IDNotRecognisedException{
         if(this.getTeamByID(teamID)==-1){
             throw new IDNotRecognisedException("This team ID is not in the system");
         }
@@ -192,7 +203,12 @@ public class RMS {
                 ids.add(r.getRiderID());
             }
         }
-        return ids.toArray();
+        int[] converted; //used to convert arrayList into int []
+        converted = new int[ids.size()];
+        for (int i = 0; i < ids.size(); i++) {
+            converted[i] = ids.get(i);
+        }
+        return converted;
     }
 
 }
