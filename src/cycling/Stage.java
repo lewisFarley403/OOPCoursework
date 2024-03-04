@@ -4,10 +4,12 @@ import java.util.HashMap;
 
 public abstract class Stage {
     private StageType stageType;
+    public boolean waitingForResults;
     public int[] riders;
-    private HashMap<Integer, Float> results; //riderID as keys, times as values
+    public HashMap<Integer, Float> results; //riderID as keys, times as values
 
     public Stage(StageType stageType,int[] riders){
+        this.waitingForResults=true;
         this.stageType = stageType;
         this.riders = riders;
         this.results = new HashMap<>();
@@ -15,6 +17,9 @@ public abstract class Stage {
             //add riderID,0 key pair to this.
             this.addRider(riderID);
         }
+    }
+    public void toggleWaitingForResults(){
+        this.waitingForResults = !this.waitingForResults;
     }
     public abstract void removeRider(int ID);//abstract needs to be implemented
     public abstract void addRider(int ID); //abstract, needs to be...
@@ -29,4 +34,5 @@ public abstract class Stage {
         return totalSprinter.get(ID);
 
     }
+    public abstract void registerRiderResults(int riderID,float[] checkpointTimes) throws InvalidCheckpointTimesException,DuplicatedResultException,IDNotRecognisedException,InvalidStageStateException;
 }
