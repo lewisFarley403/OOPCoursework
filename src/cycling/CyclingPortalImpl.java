@@ -1,11 +1,54 @@
 package cycling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class CyclingPortalImpl implements CyclingPortal{ //take out abstract later
     RMS rms;
+    List<Race> races;
     public CyclingPortalImpl(){
         this.rms = new RMS();
-
+        this.races = new ArrayList<>();
     }
+    // Race methods
+
+
+    public int createRace(String name, String description) throws IllegalNameException,InvalidNameException {
+        Race race = new Race(races.size() + 1, name, description);
+        races.add(race);
+        return race.getId();
+    }
+
+    public void removeRaceById(int raceID) throws IDNotRecognisedException {
+        Race raceToRemove = null;
+        for (Race race : races) {
+            if (race.getId() == raceID) {
+                raceToRemove = race;
+                break;
+            }
+        }
+        if (raceToRemove == null) {
+            throw new IDNotRecognisedException("Race ID not recognised");
+        }
+        races.remove(raceToRemove);
+    }
+
+    @Override
+    public int[] getRaceIds() {
+        return races.stream().mapToInt(Race::getId).toArray();
+    }
+
+    @Override
+    public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
+        for (Race race : races) {
+            if (race.getId() == raceId) {
+                return race.getStages().stream().mapToInt(Stage::getRaceIds).toArray();
+            }
+        }
+        throw new IDNotRecognisedException("Race ID not recognised");
+    }
+
+    // RMS methods
 
     @Override
     public int createTeam(String name, String description) throws IllegalNameException,InvalidNameException{
@@ -34,6 +77,5 @@ public abstract class CyclingPortalImpl implements CyclingPortal{ //take out abs
         //more to this function, must remove all of this riders time and stuff
 
     }
-
 
 }
