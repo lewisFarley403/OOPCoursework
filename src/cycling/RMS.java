@@ -10,6 +10,13 @@ public class RMS {
     public ArrayList<Rider> getRiders() {
         return riders;
     }
+    public int [] getRiderIds(){
+        int [] ids = new int [this.riders.size()];
+        for(int i =0;i<ids.length;i++){
+            ids[i] = this.riders.get(i).getRiderID();
+        }
+        return ids;
+    }
 
 //    public ArrayList<Team> getTeams() {
 //        return teams;

@@ -1,5 +1,7 @@
 package cycling;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
@@ -11,8 +13,8 @@ public abstract class Checkpoint {
     CheckpointType type;
     Double averageGradient;
     Double length;
-    HashMap<Integer,Float> results;
-    public Checkpoint(Double location, CheckpointType type, Double averageGradient, Double length,int[] riders){
+    HashMap<Integer,Duration> results;
+    public Checkpoint(Double location, CheckpointType type,int[] riders){
         this.location = location;
         this.type = type;
         this.averageGradient = averageGradient;
@@ -40,7 +42,7 @@ public abstract class Checkpoint {
         return this.type;
     }
 
-    void registerResult(int riderID,float time) throws DuplicatedResultException,IDNotRecognisedException{
+    void registerResult(int riderID, Duration time) throws DuplicatedResultException,IDNotRecognisedException{
         if (!this.results.containsKey(riderID)){
             throw new IDNotRecognisedException("this rider is not registered in this stage");
         }
@@ -71,7 +73,7 @@ public abstract class Checkpoint {
         //can be improved by swapping bubble sort for a better impl
         int [] keysArray = this.getRiderIDs();
 
-        float [] times = new float[keysArray.length];
+        Duration [] times = new Duration[keysArray.length];
         for (int i =0;i<keysArray.length;i++){
             times[i] = this.results.get(keysArray[i]);
         }
@@ -80,7 +82,8 @@ public abstract class Checkpoint {
         while(change){
             change = false;
             for(int i = 0;i<times.length-1;i++){
-                if(times[i]<times[i+1]){
+//                if(times[i]<times[i+1]){
+                if(times[i].compareTo(times[i+1])<0){
                     swap(i,i+1,keysArray,times);
                     change = true;
                 }
@@ -93,14 +96,14 @@ public abstract class Checkpoint {
         return ids;
 
     }
-    public static void swap(int i, int j, int[] keysArray, float[] times) {
+    public static void swap(int i, int j, int[] keysArray, Duration[] times) {
         // Swap elements in keysArray
         int tempKey = keysArray[i];
         keysArray[i] = keysArray[j];
         keysArray[j] = tempKey;
 
         // Swap elements in times array
-        float tempTime = times[i];
+        Duration tempTime = times[i];
         times[i] = times[j];
         times[j] = tempTime;
     }
@@ -117,23 +120,27 @@ public abstract class Checkpoint {
     }
 }
 class ITT extends Checkpoint{
+
     public ITT(Double location, CheckpointType type, Double averageGradient, Double length,int[] riders){
-        super(location,type,averageGradient,length,riders);
+        super(location,type,riders);
 
         this.pointDistribution = new int[] {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
     }
 } //Individual time trial stage
 
 class IS extends Checkpoint{
-    public IS(Double location, CheckpointType type, Double averageGradient, Double length,int[] riders){
-        super(location,type,averageGradient,length,riders);
-
+    public IS(Double location, CheckpointType type,int[] riders){
+        super(location,type,riders);
         this.pointDistribution = new int[] {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
     }
 } //Intermediate sprint
 class CC extends Checkpoint{
+    Double averageGradient;
+    Double length;
     public CC(Double location, CheckpointType type, Double averageGradient, Double length,int[] riders){
-        super(location,type,averageGradient,length,riders);
+        super(location,type,riders);
+        this.averageGradient = averageGradient;
+        this.length = length;
         this.pointDistribution = new int [] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     }
 }

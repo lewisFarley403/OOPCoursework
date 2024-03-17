@@ -12,7 +12,7 @@ import java.util.HashMap;
  * will want to increase these checks, and run it on your CyclingPortalImpl class
  * (not the BadCyclingPortal class).
  *
- * 
+ *
  * @author Diogo Pacheco
  * @version 2.0
  */
@@ -23,6 +23,8 @@ public class CyclingPortalTestApp {
 	 *
 	 * @param args not used
 	 */
+
+
 	public static void main(String[] args) throws IllegalNameException, InvalidNameException, IDNotRecognisedException {
 		//RMS tests
 		Team t = new Team("t1", "desc 1", 11);
@@ -35,15 +37,15 @@ public class CyclingPortalTestApp {
 
 		// Stage test
 		int[] a = {1, 2, 3, 4, 5};
-		StageWithCheckpoints s = new StageWithCheckpoints(a);
-		int id = s.addCategorizedClimbToStage(10.0, CheckpointType.C1, 0.8, 100.0);
-		System.out.println(id);
+//		StageWithCheckpoints s = new StageWithCheckpoints(a);
+//		int id = s.addCategorizedClimbToStage(10.0, CheckpointType.C1, 0.8, 100.0);
+//		System.out.println(id);
 //		s.removeCheckpoint(0);
 //		s.removeCheckpoint(0);
 
 
-		HashMap<Integer, Float> mps = s.getMountainPoints();
-		System.out.println(mps);
+//		HashMap<Integer, Float> mps = s.getMountainPoints();
+//		System.out.println(mps);
 
 
 //		// TODO replace BadMiniCyclingPortalImpl by CyclingPortalImpl
@@ -234,5 +236,5 @@ public class CyclingPortalTestApp {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-//	}
-//}
+	}
+}
