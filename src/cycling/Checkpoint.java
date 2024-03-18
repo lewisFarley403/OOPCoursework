@@ -24,10 +24,10 @@ public abstract class Checkpoint {
 
 
         //creates empty results dict
-        for(int riderID:riders){
-            this.addRider(riderID);
-
-        }
+//        for(int riderID:riders){
+//            this.addRider(riderID);
+//
+//        }
     }
     public void removeRider(int ID){
         this.results.remove(ID);
@@ -35,7 +35,7 @@ public abstract class Checkpoint {
     public void addRider(int riderID){
         this.results.put(riderID,null);
     }//null implies that the rider has not had a result registered yet
-    HashMap<Integer,Float> getResults(){
+    HashMap<Integer,Duration> getResults(){
         return this.results;
     }
     CheckpointType getType(){
@@ -43,10 +43,10 @@ public abstract class Checkpoint {
     }
 
     void registerResult(int riderID, Duration time) throws DuplicatedResultException,IDNotRecognisedException{
-        if (!this.results.containsKey(riderID)){
-            throw new IDNotRecognisedException("this rider is not registered in this stage");
-        }
-        if (this.results.get(riderID)==null){
+//        if (!this.results.containsKey(riderID)){
+//            throw new IDNotRecognisedException("this rider is not registered in this stage");
+//        }
+        if (this.results.containsKey(riderID)){
             throw new DuplicatedResultException("This riders result has already been registered in this checkpoint");
         }
         this.results.put(riderID,time);
@@ -117,6 +117,12 @@ public abstract class Checkpoint {
             points.replace(raceOrder[i],(float)this.pointDistribution[i]);
         }
         return points;
+    }
+    Duration getRiderResult(int riderID) throws IDNotRecognisedException{
+        if (!this.results.containsKey(riderID)){
+            throw new IDNotRecognisedException("This riderID doesn't exist");
+        }
+        return this.results.get(riderID);
     }
 }
 class ITT extends Checkpoint{

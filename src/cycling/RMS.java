@@ -217,5 +217,8 @@ public class RMS {
         }
         return converted;
     }
+    boolean hasRiderRegistered(int riderID){
+        return !(this.getRiderByID(riderID) == -1);
+    }
 
 }

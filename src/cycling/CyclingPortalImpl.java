@@ -1,11 +1,13 @@
 package cycling;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public abstract class CyclingPortalImpl implements MiniCyclingPortal{ //take out abstract later, change mini to regular when done with mini
+public class CyclingPortalImpl implements MiniCyclingPortal{ //take out abstract later, change mini to regular when done with mini
     RMS rms;
     List<Race> races;
 
@@ -17,7 +19,12 @@ public abstract class CyclingPortalImpl implements MiniCyclingPortal{ //take out
     }
     // Race methods
 
+    private void performRiderIDChecks(int riderID)throws IDNotRecognisedException{
+        if(this.rms.hasRiderRegistered(riderID)){
+            throw new IDNotRecognisedException("This rider isnt recognised in the system");
+        }
 
+    }
     private Race getRaceByID(int raceId) throws IDNotRecognisedException{
         for (Race race:this.races){
             if(race.getId() == raceId){
@@ -129,14 +136,14 @@ private Stage getStageByID(int id) throws IDNotRecognisedException{
 
     public int createRider(int teamID,String name, int yearOfBirth) throws IDNotRecognisedException{
         //test this because of Integer to let things be null
+
         return this.rms.createRider(teamID,name,yearOfBirth);
+
+
     }
     @Override
     public void removeRider(int riderID) throws IDNotRecognisedException{
         this.rms.removeRider(riderID);
-        for (Race race:this.races){
-            race.removeRider(riderID);
-        }
     }
 
     private static StageWithCheckpoints stageToStageWithCheckpoint(Stage s) throws InvalidStageTypeException{
@@ -204,5 +211,71 @@ private Stage getStageByID(int id) throws IDNotRecognisedException{
         stage.registerRiderResults(riderId,checkpointTimes);
 
     }
+    public LocalTime [] getRiderResultsInStage(int stageID,int riderID) throws IDNotRecognisedException{
+        Stage stage = this.getStageByID(stageID);
+        return stage.getRiderResults(riderID);
+
+    }
+
+    public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId)
+            throws IDNotRecognisedException{
+        return null;
+    }
+
+    public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException{
+        Stage stage = this.getStageByID(stageId);
+        //check rider in rms
+        this.performRiderIDChecks(riderId);
+        stage.removeRider(riderId);
+    }
+
+    public int[] getRidersRankInStage(int stageId) throws IDNotRecognisedException{
+        Stage stage = this.getStageByID(stageId);
+        return stage.getRaceOrder();
+    }
+    public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException{
+        Stage stage = this.getStageByID(stageId);
+        return stage.getRankedAdjustedElapsedTimes();
+    }
+
+    @Override
+    public int[] getRidersPointsInStage(int stageId) throws IDNotRecognisedException {
+        Stage stage = this.getStageByID(stageId);
+
+        return stage.getSprinterPointsArray();
+
+    }
+
+    @Override
+    public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
+        Stage stage = this.getStageByID(stageId);
+        if(!(stage instanceof StageWithCheckpoints)){
+            return new int[0];
+        }
+        StageWithCheckpoints s = (StageWithCheckpoints) stage;
+        return s.getMountainPointsArray();
+    }
+
+    @Override
+    public void eraseCyclingPortal() {
+        this.races.clear();
+        this.nextStageID=0;
+        this.rms = new RMS();
+
+
+    }
+
+    @Override
+    public void saveCyclingPortal(String filename) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
+        // TODO Auto-generated method stub
+
+    }
+
 
 }

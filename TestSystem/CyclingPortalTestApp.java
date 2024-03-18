@@ -25,7 +25,7 @@ public class CyclingPortalTestApp {
 	 */
 
 
-	public static void main(String[] args) throws IllegalNameException, InvalidNameException, IDNotRecognisedException {
+	public static void main(String[] args) throws IllegalNameException, InvalidNameException, IDNotRecognisedException, InvalidLengthException, InvalidStageStateException, InvalidLocationException, InvalidStageTypeException, DuplicatedResultException, InvalidCheckpointTimesException {
 		//RMS tests
 		Team t = new Team("t1", "desc 1", 11);
 		RMS rms = new RMS();
@@ -35,6 +35,26 @@ public class CyclingPortalTestApp {
 		System.out.println(rms.getRiders().get(0).getTeamID());
 		System.out.println("The system compiled and started the execution...");
 
+
+		CyclingPortalImpl c = new CyclingPortalImpl();
+		int idr=c.createRace("t1","shit");
+		int ids = c.addStageToRace(1,"r1s1","blah",69,LocalDateTime.of(2000,1,1,20,0,0),StageType.FLAT);
+		System.out.println("RaceID is "+ idr);
+		System.out.println("stageID is "+ids);
+		int idc = c.addCategorizedClimbToStage(ids,69.0,CheckpointType.C1,0.5,2.0);
+		int idt = c.createTeam("team1"," ");
+		int riderID = c.createRider(idt,"bob",2000);
+		System.out.println("Climb ID = "+idc);
+		System.out.println("Team ID = "+idt);
+
+		System.out.println("riderID = "+riderID);
+
+
+		c.concludeStagePreparation(ids);
+		LocalTime [] timesIn={LocalTime.of(20,0,0),LocalTime.of(20,30,0),LocalTime.of(21,0,0)};
+		c.registerRiderResultsInStage(ids,riderID,LocalTime.of(20,0,0),LocalTime.of(20,30,0),LocalTime.of(21,0,0));
+		LocalTime [] timesOut = c.getRiderResultsInStage(ids,riderID);
+		System.out.println("TimesIn[0] = "+timesIn[2]+" times out [0] = "+timesOut[2]);
 		// Stage test
 		int[] a = {1, 2, 3, 4, 5};
 //		StageWithCheckpoints s = new StageWithCheckpoints(a);
