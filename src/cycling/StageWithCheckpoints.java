@@ -14,6 +14,9 @@ public abstract class StageWithCheckpoints extends Stage {
 
     public int [] riderIDs;
     private int checkpointCounter;
+    private HashMap<Integer, Integer> mountainPoints;
+
+
     //    public Stage(StageType stageType, int[] riders, String description, double length, LocalDateTime startTime){
     public StageWithCheckpoints(StageType stageType, int[] riders, String description, double length, LocalDateTime startTime){
         super(stageType,riders,description,length, startTime); // Call the constructor of the super class
@@ -308,6 +311,13 @@ public abstract class StageWithCheckpoints extends Stage {
         }
         return times;
     }
+
+//    public StageWithCheckpoints() {
+//        this.mountainPoints = new HashMap<>();
+//        public int getMountainPoints(int checkpointID) {
+//            return mountainPoints.get(checkpointID);
+//        }
+//    }
 
 
 

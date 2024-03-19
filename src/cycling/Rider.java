@@ -32,6 +32,8 @@ public class Rider {
     public void setTeamID(int teamID) {
         this.teamID = teamID;
     }
+    private int totalTime;
+    private int points;
 
     private String name;
     private int yearOfBirth;
@@ -42,7 +44,22 @@ public class Rider {
         this.yearOfBirth=yearOfBirth;
         this.riderID=riderID;
         this.teamID=teamID;
+        this.totalTime = 0; // Initialize totalTime to 0
+        this.points = 0; // Initialize points to 0
+    }
+    public int getTotalTime() {
+        return totalTime;
+    }
 
+    public void setTotalTime(int totalTime) {
+        this.totalTime = totalTime;
+    }
 
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 }

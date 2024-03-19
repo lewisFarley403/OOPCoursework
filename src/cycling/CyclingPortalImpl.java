@@ -1,13 +1,15 @@
 package cycling;
 
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Iterator;
+import java.util.Comparator;
 
-public class CyclingPortalImpl implements MiniCyclingPortal{ //take out abstract later, change mini to regular when done with mini
+public class CyclingPortalImpl implements CyclingPortal{ //take out abstract later, change mini to regular when done with mini
     RMS rms;
     List<Race> races;
 
@@ -83,9 +85,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal{ //take out abstract
         Race raceToRemove = this.getRaceByID(raceID);
         races.remove(raceToRemove);
     }
-    public void removeRaceByName(String name){
 
-    }
     private Race getRaceWithStage(int id) throws IDNotRecognisedException{
         for (Race race : this.races){
 
@@ -96,7 +96,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal{ //take out abstract
         }
         throw new IDNotRecognisedException("This stage ID isn't registered in the system");
     }
-private Stage getStageByID(int id) throws IDNotRecognisedException{
+    private Stage getStageByID(int id) throws IDNotRecognisedException{
         return this.getRaceWithStage(id).getStageByID(id);
 
 }
@@ -267,15 +267,121 @@ private Stage getStageByID(int id) throws IDNotRecognisedException{
 
     @Override
     public void saveCyclingPortal(String filename) throws IOException {
-        // TODO Auto-generated method stub
-
+        try (FileOutputStream fileOut = new FileOutputStream(filename);
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(this);
+        }
     }
 
     @Override
     public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-        // TODO Auto-generated method stub
+        try (FileInputStream fileIn = new FileInputStream(filename);
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            CyclingPortalImpl loadedPortal = (CyclingPortalImpl) in.readObject();
+            // Copy the state from loadedPortal to this object
+            this.races = loadedPortal.races;
+            this.nextStageID = loadedPortal.nextStageID;
+            this.rms = loadedPortal.rms;
+        }
+    }
+    @Override
+    public void removeRaceByName(String name) throws NameNotRecognisedException {
+        boolean raceFound = false;
+        for (Iterator<Race> iterator = races.iterator(); iterator.hasNext();){
+            Race race = iterator.next();
+            if (race.getName().equals(name)){
+                iterator.remove();
+                raceFound = true;
+                break;
+            }
+        }
+        if (!raceFound){
+            throw new NameNotRecognisedException("No race found with the name: " + name);
+    }
+}
 
+    @Override
+    public int[] getRidersGeneralClassificationRank(int raceId) throws IDNotRecognisedException {
+        Race race = this.getRaceByID(raceId);
+        return race.getRidersGeneralClassificationRank();
     }
 
+    @Override
+    public LocalTime[] getGeneralClassificationTimesInRace(int raceId) throws IDNotRecognisedException {
+        Race race = getRaceByID(raceId);
+        if (race == null) {
+            throw new IDNotRecognisedException("The ID is not recognised");
+        }
+
+        List<Rider> riders = race.getRiders();
+        riders.sort(Comparator.comparing(Rider::getTotalTime));
+
+        LocalTime[] times = new LocalTime[riders.size()];
+        for (int i = 0; i < riders.size(); i++) {
+            times[i] = LocalTime.ofSecondOfDay(riders.get(i).getTotalTime());
+        }
+
+        return times;
+    }
+
+    @Override
+    public int[] getRidersPointsInRace(int raceId) throws IDNotRecognisedException {
+        Race race = getRaceByID(raceId);
+        if (race == null) {
+            throw new IDNotRecognisedException("The ID is not recognised");
+        }
+
+        List<Rider> riders = race.getRiders();
+        int[] points = new int[riders.size()];
+        for (int i = 0; i < riders.size(); i++) {
+            points[i] = riders.get(i).getPoints();
+        }
+
+        return points;
+    }
+
+    // TODO: Fix this method
+    @Override
+    public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
+        Race race = getRaceByID(raceId); // You need to implement this method to retrieve a race by its ID
+        if (race == null) {
+            throw new IDNotRecognisedException("The ID does not match any race in the system.");
+        }
+
+        List<Rider> riders = race.getRiders();
+        int[] mountainPoints = new int[riders.size()];
+        for (int i = 0; i < riders.size(); i++) {
+            // TODO: FIX THIS LINE
+            mountainPoints[i] = riders.get(i).getPoints(); // Need to specifically get Mountain Points though, invalid implementation
+            // ^^
+        }
+
+        return mountainPoints;
+    }
+
+
+
+    @Override
+    public int[] getRidersPointClassificationRank(int raceId) throws IDNotRecognisedException {
+        Race race = getRaceByID(raceId);
+        if (race == null) {
+            throw new IDNotRecognisedException("The ID is not recognised");
+        }
+
+        List<Rider> riders = race.getRiders();
+        riders.sort(Comparator.comparing(Rider::getPoints).reversed());
+
+        int[] pointsRanks = new int[riders.size()];
+        for (int i = 0; i < riders.size(); i++) {
+            pointsRanks[i] = riders.get(i).getRiderID();
+        }
+        return pointsRanks;
+    }
+
+    // TODO: Rewrite this method
+    @Override
+    public int[] getRidersMountainPointClassificationRank() throws IDNotRecognisedException {
+        // TODO: Implement this method
+    }
 
 }

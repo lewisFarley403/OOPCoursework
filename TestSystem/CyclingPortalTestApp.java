@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 
+
 /**
  * A short program to illustrate an app testing some minimal functionality of a
  * concrete implementation of the CyclingPortal interface -- note you
@@ -257,4 +258,66 @@ public class CyclingPortalTestApp {
 //			e.printStackTrace();
 //		}
 	}
+
+	// TODO: MORE TEST CASES TO BE ADDED
+	//TODO: FIX THE TEST CASES
+//	CyclingPortalImpl portal = new CyclingPortalImpl();
+//
+//	// Test for eraseCyclingPortal
+//        portal.eraseCyclingPortal();
+//        System.out.println(portal.getRaceIds().length == 0 ? "Pass" : "Fail");
+//
+//	// Test for saveCyclingPortal and loadCyclingPortal
+//        try {
+//		portal.saveCyclingPortal("testPortal.dat");
+//		portal.loadCyclingPortal("testPortal.dat");
+//		System.out.println("Pass");
+//	} catch (Exception e) {
+//		System.out.println("Fail");
+//		e.printStackTrace();
+//	}
+//
+//	// Test for removeRaceByName
+//        try {
+//		portal.createRace("Test Race", "This is a test race");
+//		portal.removeRaceByName("Test Race");
+//		System.out.println("Pass");
+//	} catch (Exception e) {
+//		System.out.println("Fail");
+//		e.printStackTrace();
+//	}
+//
+//	// Test for getRidersGeneralClassificationRank
+//        try {
+//		int raceId = portal.createRace("Test Race", "This is a test race");
+//		int[] ranks = portal.getRidersGeneralClassificationRank(raceId);
+//		System.out.println(Arrays.toString(ranks));
+//	} catch (Exception e) {
+//		System.out.println("Fail");
+//		e.printStackTrace();
+//	}
+//
+//	// Test for getGeneralClassificationTimesInRace
+//        try {
+//		int raceId = portal.createRace("Test Race", "This is a test race");
+//		LocalTime[] times = portal.getGeneralClassificationTimesInRace(raceId);
+//		System.out.println(Arrays.toString(times));
+//	} catch (Exception e) {
+//		System.out.println("Fail");
+//		e.printStackTrace();
+//	}
+//
+//	// Test for getRidersPointsInRace
+//        try {
+//		int raceId = portal.createRace("Test Race", "This is a test race");
+//		int[] points = portal.getRidersPointsInRace(raceId);
+//		System.out.println(Arrays.toString(points));
+//	} catch (Exception e) {
+//		System.out.println("Fail");
+//		e.printStackTrace();
+//	}
+//}
+
+
+
 }

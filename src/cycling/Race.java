@@ -1,6 +1,7 @@
 package cycling;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,6 +10,7 @@ public class Race {
     private String name;
     private String description;
     private HashMap<Integer,Stage> stages;
+    private List<Rider> riders;
 
     public Race(int id, String name, String description) {
         this.id = id;
@@ -59,5 +61,19 @@ public class Race {
 
         return this.stages.get(id);
 
+    }
+    public int[] getRidersGeneralClassificationRank() {
+        // Sort the riders list based on the total time of each rider
+        riders.sort(Comparator.comparing(rider -> rider.getTotalTime()));
+        // Create an array of the riders' IDs
+        int[] ridersRanks = new int[riders.size()];
+        for (int i = 0; i < riders.size(); i++) {
+            ridersRanks[i] = riders.get(i).getRiderID();
+        }
+        return ridersRanks;
+    }
+
+    public List<Rider> getRiders() {
+        return riders;
     }
 }
