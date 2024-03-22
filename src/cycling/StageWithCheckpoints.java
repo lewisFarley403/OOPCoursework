@@ -104,7 +104,8 @@ public abstract class StageWithCheckpoints extends Stage {
     public void registerRiderResults(int riderID, LocalTime[] checkpointTimes) throws InvalidCheckpointTimesException,DuplicatedResultException,IDNotRecognisedException,InvalidStageStateException {
         Duration timeForCheckpoint;
         if (checkpointTimes.length!= this.checkpoints.size()+2){
-            throw new InvalidCheckpointTimesException("checkpointTimes has length "+checkpointTimes.length+ "but should have "+this.checkpoints.size()+2);
+            System.out.println(this.checkpoints.size());
+            throw new InvalidCheckpointTimesException("checkpointTimes has length "+checkpointTimes.length+ "but should have "+((int)this.checkpoints.size()+2));
         }
         if (!this.waitingForResults){
             throw new InvalidStageStateException("This stage isn't waiting for results");
@@ -184,17 +185,7 @@ public abstract class StageWithCheckpoints extends Stage {
         return ids;
 
     }
-    public static void swap(int i, int j, int[] keysArray, Duration[] times) {
-        // Swap elements in keysArray
-        int tempKey = keysArray[i];
-        keysArray[i] = keysArray[j];
-        keysArray[j] = tempKey;
 
-        // Swap elements in times array
-        Duration tempTime = times[i];
-        times[i] = times[j];
-        times[j] = tempTime;
-    }
 
     private int[] orderHashMapByRaceOrder(HashMap<Integer,Float> map){
         int [] raceOrder = this.getRaceOrder();

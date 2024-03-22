@@ -1,4 +1,5 @@
 package cycling;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.lang.IllegalArgumentException;
 
@@ -6,7 +7,7 @@ import java.lang.IllegalArgumentException;
  * The RMS (Rider Management System) class represents a system for managing riders and teams in the cycling domain.
  * It provides functionality to store information about riders and teams.
  */
-public class RMS {
+public class RMS implements Serializable {
     public ArrayList<Rider> getRiders() {
         return riders;
     }

@@ -62,5 +62,16 @@ public abstract class Stage {
     public abstract int [] getRaceOrder();
 
     public abstract LocalTime[] getRankedAdjustedElapsedTimes();
+    public static void swap(int i, int j, int[] keysArray, Duration[] times) {
+        // Swap elements in keysArray
+        int tempKey = keysArray[i];
+        keysArray[i] = keysArray[j];
+        keysArray[j] = tempKey;
+
+        // Swap elements in times array
+        Duration tempTime = times[i];
+        times[i] = times[j];
+        times[j] = tempTime;
+    }
 }
 

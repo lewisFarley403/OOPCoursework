@@ -1,9 +1,8 @@
 package cycling;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.time.Duration;
+import java.util.*;
 
 public class Race {
     private int id;
@@ -62,18 +61,58 @@ public class Race {
         return this.stages.get(id);
 
     }
-    public int[] getRidersGeneralClassificationRank() {
-        // Sort the riders list based on the total time of each rider
-        riders.sort(Comparator.comparing(rider -> rider.getTotalTime()));
-        // Create an array of the riders' IDs
-        int[] ridersRanks = new int[riders.size()];
-        for (int i = 0; i < riders.size(); i++) {
-            ridersRanks[i] = riders.get(i).getRiderID();
+
+    public HashMap<Integer,Duration> getGeneralClassificationTimeMap(){
+        HashMap<Integer,Duration> overallPoints = new HashMap<>();
+        for (Stage s : this.stages.values()){
+            HashMap<Integer, Duration> stagePoints = s.getGCPoints();
+            for(int riderID : stagePoints.keySet()){
+                Duration temp = overallPoints.get(riderID);
+                if (temp == null){
+                    overallPoints.put(riderID,stagePoints.get(riderID));
+                }
+                else {
+                    Duration points = stagePoints.get(riderID);
+                    if (points != null) {
+                        temp = temp.plus(points);
+
+                    }
+                    overallPoints.put(riderID, temp);
+                }
+
+            }
+
+
+
         }
-        return ridersRanks;
+        return overallPoints;
+
+    }
+    public int[] getRidersGeneralClassificationRank() {
+
+
+        HashMap<Integer,Duration> overallPoints = this.getGeneralClassificationTimeMap();
+        System.out.println("desperate now "+overallPoints);
+        ArrayList<Integer> sortedIDs=new ArrayList<>(overallPoints.keySet());
+        Collections.sort(sortedIDs,(k1, k2) -> {
+
+                Duration d1 = overallPoints.get(k1);
+                Duration d2 = overallPoints.get(k2);
+                return d1.compareTo(d2);
+            }
+        );
+
+        int[] sortedIDsArr = new int[sortedIDs.size()];
+        for (int i = 0; i < sortedIDs.size(); i++) {
+            sortedIDsArr[i] = sortedIDs.get(i);
+        }
+//        return overallPoints;
+        return sortedIDsArr;
     }
 
     public List<Rider> getRiders() {
         return riders;
     }
+
+    public ArrayList<Integer> getRace
 }

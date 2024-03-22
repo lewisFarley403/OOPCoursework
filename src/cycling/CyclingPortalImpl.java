@@ -1,15 +1,12 @@
 package cycling;
 
 import java.io.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Comparator;
+import java.util.*;
 
-public class CyclingPortalImpl implements CyclingPortal{ //take out abstract later, change mini to regular when done with mini
+public class CyclingPortalImpl implements CyclingPortal,Serializable{ //take out abstract later, change mini to regular when done with mini
     RMS rms;
     List<Race> races;
 
@@ -99,7 +96,7 @@ public class CyclingPortalImpl implements CyclingPortal{ //take out abstract lat
     private Stage getStageByID(int id) throws IDNotRecognisedException{
         return this.getRaceWithStage(id).getStageByID(id);
 
-}
+    }
     public double getStageLength(int stageId) throws IDNotRecognisedException{
         return this.getStageByID(stageId).getLength();
     }
@@ -160,7 +157,7 @@ public class CyclingPortalImpl implements CyclingPortal{ //take out abstract lat
     }
     @Override
     public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient,
-                                   Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException, InvalidStageTypeException{
+                                          Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException, InvalidStageTypeException{
 
         Stage s = this.getStageByID(stageId);
         StageWithCheckpoints stage = stageToStageWithCheckpoint(s);
@@ -297,8 +294,8 @@ public class CyclingPortalImpl implements CyclingPortal{ //take out abstract lat
         }
         if (!raceFound){
             throw new NameNotRecognisedException("No race found with the name: " + name);
+        }
     }
-}
 
     @Override
     public int[] getRidersGeneralClassificationRank(int raceId) throws IDNotRecognisedException {
@@ -313,12 +310,26 @@ public class CyclingPortalImpl implements CyclingPortal{ //take out abstract lat
             throw new IDNotRecognisedException("The ID is not recognised");
         }
 
-        List<Rider> riders = race.getRiders();
-        riders.sort(Comparator.comparing(Rider::getTotalTime));
+        ArrayList<Rider> riders = this.rms.getRiders();
+        System.out.println(riders);
+        HashMap <Integer, Duration> gcTimeMap =race.getGeneralClassificationTimeMap();
+        System.out.println("gc map thats empty "+gcTimeMap);
+        System.out.println("rider 0 id "+riders.get(1).getRiderID());
+        Collections.sort(riders,(r1,r2)->{
+            System.out.println(gcTimeMap);
+            Duration d1 =gcTimeMap.get(r1.getRiderID());
+            System.out.println(d1);
+            Duration d2 = gcTimeMap.get(r2.getRiderID());
+            System.out.println(d2);
+            return d1.compareTo(d2);
 
+        });
+        LocalTime midNight = LocalTime.of(0,0,0);
         LocalTime[] times = new LocalTime[riders.size()];
         for (int i = 0; i < riders.size(); i++) {
-            times[i] = LocalTime.ofSecondOfDay(riders.get(i).getTotalTime());
+            int riderID = riders.get(i).getRiderID();
+            Duration d = gcTimeMap.get(riderID);
+            times[i] = midNight.plus(d);
         }
 
         return times;
@@ -331,7 +342,9 @@ public class CyclingPortalImpl implements CyclingPortal{ //take out abstract lat
             throw new IDNotRecognisedException("The ID is not recognised");
         }
 
-        List<Rider> riders = race.getRiders();
+
+        ArrayList<Rider> riders = this.rms.getRiders();
+
         int[] points = new int[riders.size()];
         for (int i = 0; i < riders.size(); i++) {
             points[i] = riders.get(i).getPoints();
@@ -380,8 +393,9 @@ public class CyclingPortalImpl implements CyclingPortal{ //take out abstract lat
 
     // TODO: Rewrite this method
     @Override
-    public int[] getRidersMountainPointClassificationRank() throws IDNotRecognisedException {
+    public int[] getRidersMountainPointClassificationRank(int raceId) throws IDNotRecognisedException {
         // TODO: Implement this method
+        return null;
     }
 
 }
