@@ -62,29 +62,29 @@ public class CyclingPortalTestApp {
 //		testCreateRace();
 //		testViewRaceDetails();
 //		testAddStageToRace();
-
-
-
-	//main test suit
-
-
+//
+//
+//
+//	main test suit
+//
+//
 //		StageWithCheckpoints s = new StageWithCheckpoints(a);
 //		int id = s.addCategorizedClimbToStage(10.0, CheckpointType.C1, 0.8, 100.0);
 //		System.out.println(id);
 //		s.removeCheckpoint(0);
 //		s.removeCheckpoint(0);
-
-
+//
+//
 //		HashMap<Integer, Float> mps = s.getMountainPoints();
 //		System.out.println(mps);
-
-
+//
+//
 //		// TODO replace BadMiniCyclingPortalImpl by CyclingPortalImpl
 //		MiniCyclingPortal portal1 = new BadMiniCyclingPortalImpl();
 //		MiniCyclingPortal portal2 = new BadMiniCyclingPortalImpl();
 //
-
-
+//
+//
 //		assert (portal1.getRaceIds().length == 0)
 //				: "Innitial Portal not empty as required or not returning an empty array.";
 //		assert (portal1.getTeams().length == 0)
@@ -104,8 +104,8 @@ public class CyclingPortalTestApp {
 //
 //		assert (portal2.getTeams().length == 1)
 //				: "Portal2 should have one team.";
-
-
+//
+//
 //		// Race tests
 //		CyclingPortal portal = new CyclingPortalImpl() {
 //			@Override
@@ -269,101 +269,87 @@ public class CyclingPortalTestApp {
 //		}
 
 
-	// TODO: MORE TEST CASES TO BE ADDED
-	//TODO: FIX THE TEST CASES
-	CyclingPortalImpl portal = new CyclingPortalImpl();
+		// TODO: MORE TEST CASES TO BE ADDED
+		//TODO: FIX THE TEST CASES
+		CyclingPortalImpl portal = new CyclingPortalImpl();
 
-	// Test for eraseCyclingPortal
-        portal.eraseCyclingPortal();
-        System.out.println(portal.getRaceIds().length ==0?"Pass 1":"Fail 1");
+		// Test for eraseCyclingPortal
+		portal.eraseCyclingPortal();
+		System.out.println(portal.getRaceIds().length == 0 ? "Pass 1" : "Fail 1");
 
-	// Test for saveCyclingPortal and loadCyclingPortal
-        try
+		// Test for saveCyclingPortal and loadCyclingPortal
+		try {
+			portal.saveCyclingPortal("testPortal.dat");
+			portal.loadCyclingPortal("testPortal.dat");
+			System.out.println("Pass 2");
+		} catch (
+				Exception e) {
+			System.out.println("Fail 2");
+			e.printStackTrace();
+		}
 
-	{
-		portal.saveCyclingPortal("testPortal.dat");
-		portal.loadCyclingPortal("testPortal.dat");
-		System.out.println("Pass 2");
-	} catch(
-	Exception e)
+		// Test for removeRaceByName
+		try {
+			portal.createRace("Test Race", "This is a test race");
+			portal.removeRaceByName("Test Race");
+			System.out.println("Pass 3");
+		} catch (
+				Exception e) {
+			System.out.println("Fail 3");
+			e.printStackTrace();
+		}
 
-	{
-		System.out.println("Fail 2");
-		e.printStackTrace();
-	}
+		// Test for getRidersGeneralClassificationRank
+		try {
+			int raceId = portal.createRace("Test Race", "This is a test race");
+			int stageID = portal.addStageToRace(raceId, "Test1", "", 10.0, LocalDateTime.now(), StageType.FLAT);
+			portal.addIntermediateSprintToStage(stageID, 10);
+			System.out.println(portal.createTeam("", ""));
 
-	// Test for removeRaceByName
-        try
+			portal.createRider(0, "t1", 2000);
+			portal.createRider(0, "t2", 2001);
+			System.out.println(stageID);
+			portal.concludeStagePreparation(stageID);
 
-	{
-		portal.createRace("Test Race", "This is a test race");
-		portal.removeRaceByName("Test Race");
-		System.out.println("Pass 3");
-	} catch(
-	Exception e)
-
-	{
-		System.out.println("Fail 3");
-		e.printStackTrace();
-	}
-
-	// Test for getRidersGeneralClassificationRank
-        try
-
-	{
-		int raceId = portal.createRace("Test Race", "This is a test race");
-		int stageID =portal.addStageToRace(raceId,"Test1","", 10.0,LocalDateTime.now(),StageType.FLAT);
-		portal.addIntermediateSprintToStage(stageID,10);
-		System.out.println(portal.createTeam("",""));
-
-		portal.createRider(0,"t1",2000);
-		portal.createRider(0,"t2",2001);
-		System.out.println(stageID);
-		portal.concludeStagePreparation(stageID);
-
-		portal.registerRiderResultsInStage(stageID,0,LocalTime.of(1,15,0),LocalTime.of(2,15,0),LocalTime.of(3,0,0));
-		portal.registerRiderResultsInStage(stageID,1,LocalTime.of(1,15,0),LocalTime.of(2,15,0),LocalTime.of(4,22,0));
+			portal.registerRiderResultsInStage(stageID, 0, LocalTime.of(1, 15, 0), LocalTime.of(2, 15, 0), LocalTime.of(3, 0, 0));
+			portal.registerRiderResultsInStage(stageID, 1, LocalTime.of(1, 15, 0), LocalTime.of(2, 15, 0), LocalTime.of(4, 22, 0));
 
 //		portal.concludeStagePreparation(stageID);
-		int[] ranks = portal.getRidersGeneralClassificationRank(raceId);
-		System.out.println(Arrays.toString(ranks));
-	} catch(
-	Exception e)
+			int[] ranks = portal.getRidersGeneralClassificationRank(raceId);
+			System.out.println(Arrays.toString(ranks));
+		} catch (
+				Exception e) {
+			System.out.println("Fail 4");
+			e.printStackTrace();
+		}
 
-	{
-		System.out.println("Fail 4");
-		e.printStackTrace();
-	}
-
-	// Test for getGeneralClassificationTimesInRace
-        try
-
-	{
+		// Test for getGeneralClassificationTimesInRace
+		try {
 //		int raceId = portal.createRace("Test Race", "This is a test race");
-		LocalTime[] times = portal.getGeneralClassificationTimesInRace(1);
-		System.out.println(Arrays.toString(times));
-	} catch(
-	Exception e)
+			LocalTime[] times = portal.getGeneralClassificationTimesInRace(1);
+			System.out.println(Arrays.toString(times));
+		} catch (
+				Exception e) {
+			System.out.println("Fail 5");
+			e.printStackTrace();
+		}
 
-	{
-		System.out.println("Fail 5");
-		e.printStackTrace();
-	}
+		// Test for getRidersPointsInRace
+		try {
+			int raceId = portal.createRace("Test Race", "This is a test race");
+			int[] points = portal.getRidersPointsInRace(raceId);
+			System.out.println(Arrays.toString(points));
+		} catch (
+				Exception e) {
+			System.out.println("Fail 6");
+			e.printStackTrace();
+		}
 
-	// Test for getRidersPointsInRace
-        try
+		// Test for getRidersMountainPointsInRace
+		int raceId = 1;
+		int[] result = portal.getRidersMountainPointClassificationRank(raceId);
 
-	{
-		int raceId = portal.createRace("Test Race", "This is a test race");
-		int[] points = portal.getRidersPointsInRace(raceId);
-		System.out.println(Arrays.toString(points));
-	} catch(
-	Exception e)
 
-	{
-		System.out.println("Fail 6");
-		e.printStackTrace();
-	}
 
 }
 public static void testCreateRace() {
@@ -415,3 +401,4 @@ public static void testAddStageToRace() {
 
 
 }
+

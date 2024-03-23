@@ -39,6 +39,7 @@ public class Rider {
     private int yearOfBirth;
     private int riderID;
     private int teamID;
+    private int mountainPoints;
     public Rider(String name,int yearOfBirth, int riderID,int teamID){
         this.name = name;
         this.yearOfBirth=yearOfBirth;
@@ -61,5 +62,9 @@ public class Rider {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public int getMountainPoints() {
+        return this.mountainPoints;
     }
 }

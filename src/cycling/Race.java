@@ -114,5 +114,5 @@ public class Race {
         return riders;
     }
 
-    public ArrayList<Integer> getRace
+    public ArrayList<Integer> getRace;
 }

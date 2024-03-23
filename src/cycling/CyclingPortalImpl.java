@@ -354,24 +354,48 @@ public class CyclingPortalImpl implements CyclingPortal,Serializable{ //take out
     }
 
     // TODO: Fix this method
+//    @Override
+//    public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
+//        Race race = getRaceByID(raceId); // You need to implement this method to retrieve a race by its ID
+//        if (race == null) {
+//            throw new IDNotRecognisedException("The ID does not match any race in the system.");
+//        }
+//
+//        List<Rider> riders = race.getRiders();
+//        int[] mountainPoints = new int[riders.size()];
+//        for (int i = 0; i < riders.size(); i++) {
+//            // TODO: FIX THIS LINE
+//            mountainPoints[i] = riders.get(i).getPoints(); // Need to specifically get Mountain Points though, invalid implementation
+//            // ^^
+//        }
+//
+//        return mountainPoints;
+//    }
+
+    // TODO: Verify this method
     @Override
     public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
-        Race race = getRaceByID(raceId); // You need to implement this method to retrieve a race by its ID
+        // Check if the raceId exists in the system
+        Race race = getRaceByID(raceId);
         if (race == null) {
-            throw new IDNotRecognisedException("The ID does not match any race in the system.");
+            throw new IDNotRecognisedException("Race ID does not exist in the system");
         }
 
-        List<Rider> riders = race.getRiders();
-        int[] mountainPoints = new int[riders.size()];
-        for (int i = 0; i < riders.size(); i++) {
-            // TODO: FIX THIS LINE
-            mountainPoints[i] = riders.get(i).getPoints(); // Need to specifically get Mountain Points though, invalid implementation
-            // ^^
+        // Get the list of rider IDs in the race
+        RMS rmsInstance = new RMS();
+        int[] riderIds = rmsInstance.getRiderIds();
+
+        // Create an array to store the mountain points of each rider
+        int[] mountainPoints = new int[riderIds.length];
+
+        // Iterate over each rider and get their mountain points
+        for (int i = 0; i < riderIds.length; i++) {
+            // Get the rider's mountain points in the race
+            mountainPoints[i] = getRidersMountainPointsInRace(raceId)[i];
         }
 
         return mountainPoints;
     }
-
 
 
     @Override
@@ -391,11 +415,30 @@ public class CyclingPortalImpl implements CyclingPortal,Serializable{ //take out
         return pointsRanks;
     }
 
-    // TODO: Rewrite this method
     @Override
     public int[] getRidersMountainPointClassificationRank(int raceId) throws IDNotRecognisedException {
-        // TODO: Implement this method
-        return null;
+        Race race = getRaceByID(raceId);
+        int[] stageIds = race.getStages();
+        // Create a map to store the mountain points of each rider
+        Map<Integer, Integer> riderMountainPoints = new HashMap<>();
+        for (int stageId : stageIds) {
+            int[] riderIds = getTeamRiders(stageId);
+            int[] mountainPoints = getRidersMountainPointsInStage(stageId);
+
+            for (int i = 0; i < riderIds.length; i++) {
+                riderMountainPoints.put(riderIds[i], riderMountainPoints.getOrDefault(riderIds[i], 0) + mountainPoints[i]);
+            }
+        }
+        // Sort the riders by their mountain points
+        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(riderMountainPoints.entrySet());
+        list.sort(Map.Entry.<Integer, Integer>comparingByValue().reversed());
+        // Create an array to store the sorted rider IDs
+        int[] sortedRiders = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            sortedRiders[i] = list.get(i).getKey();
+        }
+
+        return sortedRiders;
     }
 
 }
