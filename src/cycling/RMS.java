@@ -8,6 +8,9 @@ import java.lang.IllegalArgumentException;
  * It provides functionality to store information about riders and teams.
  */
 public class RMS implements Serializable {
+    /**
+     * List of riders in the system.
+     */
     public ArrayList<Rider> getRiders() {
         return riders;
     }
@@ -22,6 +25,7 @@ public class RMS implements Serializable {
 //    public ArrayList<Team> getTeams() {
 //        return teams;
 //    }
+
     public int [] getTeams(){
         int [] teamIDs = new int[this.teams.size()];
         for (int i =0;i<this.teams.size();i++){
@@ -31,10 +35,25 @@ public class RMS implements Serializable {
         }
         return teamIDs;
     }
+    /**
+     * List of riders in the system.
+     */
     private ArrayList<Rider> riders;
+    /**
+     * List of teams in the system.
+     */
     private ArrayList<Team> teams;
+    /**
+     * The next available ID for a new team.
+     */
     private int nextAvailableTeamID;
+    /**
+     * The next available ID for a new rider.
+     */
     private int nextAvailablePlayerID;
+    /**
+     * Constructs a new RMS.
+     */
     public RMS(){
         this.riders = new ArrayList<>(); // type is infered
         this.teams = new ArrayList<>();
@@ -183,6 +202,11 @@ public class RMS implements Serializable {
         }
         this.riders.remove(riderID);
     }
+    /**
+     * Gets the IDs of the teams in the system.
+     *
+     * @return the IDs of the teams
+     */
     private int getTeamByID(int teamID){
         for(int i =0;i<this.teams.size();i++){
             if (this.teams.get(i).getID()==teamID){
@@ -218,6 +242,12 @@ public class RMS implements Serializable {
         }
         return converted;
     }
+    /**
+     * Checks if a rider is registered in the system.
+     *
+     * @param riderID the ID of the rider
+     * @return true if the rider is registered, false otherwise
+     */
     boolean hasRiderRegistered(int riderID){
         return !(this.getRiderByID(riderID) == -1);
     }

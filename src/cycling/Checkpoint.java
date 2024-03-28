@@ -6,14 +6,49 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
+
+/**
+ * Represents a checkpoint in a cycling race.
+ * This class is abstract and should be extended by specific types of checkpoints.
+ */
 public abstract class Checkpoint {
+
+    /**
+     * Distribution of points for riders at this checkpoint.
+     */
     public int [] pointDistribution;
 
+    /**
+     * Location of the checkpoint.
+     */
     Double location;
+
+    /**
+     * Type of the checkpoint.
+     */
     CheckpointType type;
+
+    /**
+     * Average gradient of to checkpoint..
+     */
     Double averageGradient;
+
+    /**
+     * Length of the course to the checkpoint.
+     */
     Double length;
+
+    /**
+     * Results of the riders at this checkpoint.
+     */
     HashMap<Integer,Duration> results;
+
+    /**
+     * Creates a new checkpoint.
+     * @param location Location of the checkpoint.
+     * @param type Type of the checkpoint.
+     * @param riders Array of rider IDs.
+     */
     public Checkpoint(Double location, CheckpointType type,int[] riders){
         this.location = location;
         this.type = type;
@@ -29,19 +64,47 @@ public abstract class Checkpoint {
 //
 //        }
     }
+
+    /**
+     * Removes a rider from the checkpoint.
+     * @param ID ID of the rider to remove.
+     */
     public void removeRider(int ID){
         this.results.remove(ID);
     }
+
+    /**
+     * Adds a rider to the checkpoint.
+     * @param riderID ID of the rider to add.
+     */
     public void addRider(int riderID){
         this.results.put(riderID,null);
     }//null implies that the rider has not had a result registered yet
+
+    /**
+     * Returns the results of the riders at this checkpoint.
+     * @return Results of the riders at this checkpoint.
+     */
     HashMap<Integer,Duration> getResults(){
         return this.results;
     }
+
+    /**
+     * Returns the type of the checkpoint.
+     * @return Type of the checkpoint.
+     */
     CheckpointType getType(){
         return this.type;
     }
 
+
+    /**
+     * Registers the result of a rider at this checkpoint.
+     * @param riderID ID of the rider.
+     * @param time Time of the rider.
+     * @throws DuplicatedResultException If the rider has already a result registered at this checkpoint.
+     * @throws IDNotRecognisedException If the rider is not registered at this checkpoint.
+     */
     void registerResult(int riderID, Duration time) throws DuplicatedResultException,IDNotRecognisedException{
 //        if (!this.results.containsKey(riderID)){
 //            throw new IDNotRecognisedException("this rider is not registered in this stage");
@@ -51,6 +114,11 @@ public abstract class Checkpoint {
         }
         this.results.put(riderID,time);
     }
+
+    /**
+     * Returns the IDs of the riders at this checkpoint.
+     * @return IDs of the riders at this checkpoint.
+     */
     public int [] getRiderIDs(){
         Set<Integer> keys = this.results.keySet();// this function returns set of all of the raceIDs
 
@@ -68,6 +136,11 @@ public abstract class Checkpoint {
         return intArr;
     }
 
+
+    /**
+     * Returns the order of the riders at this checkpoint.
+     * @return Order of the riders at this checkpoint.
+     */
     public int[] getRaceOrder(){
         //returns array of riderIDs sorted by result
         //can be improved by swapping bubble sort for a better impl
@@ -96,6 +169,14 @@ public abstract class Checkpoint {
         return ids;
 
     }
+
+    /**
+     * Swaps two riders in the order.
+     * @param i Index of the first element.
+     * @param j Index of the second element.
+     * @param keysArray Array of keys.
+     * @param times Array of times.
+     */
     public static void swap(int i, int j, int[] keysArray, Duration[] times) {
         // Swap elements in keysArray
         int tempKey = keysArray[i];
@@ -107,6 +188,11 @@ public abstract class Checkpoint {
         times[i] = times[j];
         times[j] = tempTime;
     }
+
+    /**
+     * Returns the sprinter points of the riders at this checkpoint.
+     * @return Sprinter points of the riders at this checkpoint.
+     */
     public HashMap<Integer,Float> getSprinterPoints(){
         HashMap<Integer,Float> points = new HashMap<>();
         for(Integer id : this.getRiderIDs()) {
@@ -118,6 +204,14 @@ public abstract class Checkpoint {
         }
         return points;
     }
+
+    /**
+     * Gets the result of a rider at the checkpoint.
+     *
+     * @param riderID the ID of the rider
+     * @return the result of the rider
+     * @throws IDNotRecognisedException if the rider does not exist
+     */
     Duration getRiderResult(int riderID) throws IDNotRecognisedException{
         if (!this.results.containsKey(riderID)){
             throw new IDNotRecognisedException("This riderID doesn't exist");
@@ -127,6 +221,14 @@ public abstract class Checkpoint {
 }
 class ITT extends Checkpoint{
 
+    /**
+     * Creates a new individual time trial stage.
+     * @param location Location of the checkpoint.
+     * @param type Type of the checkpoint.
+     * @param averageGradient Average gradient of the course.
+     * @param length Length of the course.
+     * @param riders Array of rider IDs.
+     */
     public ITT(Double location, CheckpointType type, Double averageGradient, Double length,int[] riders){
         super(location,type,riders);
 
@@ -135,14 +237,34 @@ class ITT extends Checkpoint{
 } //Individual time trial stage
 
 class IS extends Checkpoint{
+    /**
+     * Creates a new intermediate sprint.
+     * @param location Location of the checkpoint.
+     * @param type Type of the checkpoint.
+     * @param riders Array of rider IDs.
+     */
     public IS(Double location, CheckpointType type,int[] riders){
         super(location,type,riders);
         this.pointDistribution = new int[] {20,17,15,13,11,10,9,8,7,6,5,4,3,2,1};
     }
 } //Intermediate sprint
 class CC extends Checkpoint{
+    /**
+     * Average gradient of the course to the checkpoint.
+     */
     Double averageGradient;
+    /**
+     * Length of the course to the checkpoint.
+     */
     Double length;
+    /**
+     * Creates a new checkpoint.
+     * @param location Location of the checkpoint.
+     * @param type Type of the checkpoint.
+     * @param averageGradient Average gradient of the course.
+     * @param length Length of the course.
+     * @param riders Array of rider IDs.
+     */
     public CC(Double location, CheckpointType type, Double averageGradient, Double length,int[] riders){
         super(location,type,riders);
         this.averageGradient = averageGradient;
